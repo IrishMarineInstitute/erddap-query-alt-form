@@ -61,33 +61,13 @@ var nc_global2o = function(results){
 }
 */
 var time_encoder = function(value,istabledap) {
-	var moment = function(){throw new Error("todo")};
-	var chrono = function(){throw new Error("todo")};
-	var TIME_CLOSEST_PLACEHOLDER = "TODO";
-
   if(value instanceof Date){
     return istabledap ? value.toISOString2() : ("("+value.toISOString2()+")");
   }
-  if(value === "closest"){
-    return TIME_CLOSEST_PLACEHOLDER;
-  }
-  if(value === "first"){
-    return 0;
-  }
-  if(value === "last"){
-    return value;
-  }
   try {
-    var m = moment(chrono.parseDate(value));
-    if (m.isValid()) {
-      m = m.toDate().toISOString2();
-      if (m) {
-        return istabledap? m : ("("+m+")");
-      }
-    }
-    return value;
+    var m = new Date(value).toISOString2();
+     return istabledap? m : ("("+m+")");
   } catch (e) {
-    console.log(e);
     return value;
   }
 }

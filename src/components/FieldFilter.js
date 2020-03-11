@@ -6,7 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { KeyboardDateTimePicker } from '@material-ui/pickers'
+import { FormGroup, FormControl, FormControlLabel, FormLabel  } from '@material-ui/core';
 
 
 const AntSwitch = withStyles(theme => ({
@@ -43,49 +44,96 @@ const AntSwitch = withStyles(theme => ({
   checked: {},
 }))(Switch);
 
-class ItemTextField extends React.Component {
-	render(){
-		const {variable,operation,onValueAssigned} = this.props;
+function ItemTextField(props) {
+		const {variable,operation,onValueAssigned} = props;
 		const label = variable+" "+filterkv[operation];
 		const onChange = (e) =>{onValueAssigned(variable,operation,e.target.value)};
 		return(<TextField label={label} variant="outlined" onChange={onChange}/>)
-				
-	}
 }
-class ItemTimeField extends React.Component {
-		constructor(props){
-		super(props);
-			this.state = {
-				absolute: true
-			}
-			this.handleToggleRelativeAbsolute = this.handleToggleRelativeAbsolute.bind(this);
+
+function ItemTimeField(props){
+		const [absoluteOrRelative, setAbsoluteOrRelative] = React.useState("0");
+		const [now, setNow] = React.useState("now-");
+		const [timeUnits, setTimeUnits] = React.useState("hours");
+		const [timeQuantity, setTimeQuantity] = React.useState(1);
+		const [badDateFormat, setBadDateFormat] = React.useState(false);
+		const [selectedDate, setSelectedDate] = React.useState(false);
+		const {variable,operation,onValueAssigned} = props;
+		const label = variable+" "+filterkv[operation];
+		const onAbsoluteOrRelativeChanged = (e)=>setAbsoluteOrRelative(e.target.value);
+		const onRelativeTimeQuantityChanged = (e) =>{
+			var value = parseInt(e.target.value);
+			setTimeQuantity(value);
+			onValueAssigned(variable,operation,now+value+timeUnits);
+		};
+		const onRelativeTimeUnitsChanged = (e)=>{
+			var value = e.target.value;
+			setTimeUnits(value);
+			onValueAssigned(variable,operation,now+timeQuantity+value);
 		}
-	handleToggleRelativeAbsolute = ()=>{
-		this.setState({absolute: !this.state.absolute})
-	}
-	render(){
-		const {variable,operation,onValueAssigned} = this.props;
-		const label = variable+" XXXXXXXXXXXXX "+filterkv[operation];
-		const onChange = (e) =>{onValueAssigned(variable,operation,e.target.value)};
-		//return(<TextField label={label} variant="outlined" onChange={onChange}/>)
-		const checked = this.state.absolute;
-		const handleChange = ()=>console.log("fred");
-		return(
-			<div>
-			<Grid container spacing={2}>
-				<Grid item xs={6}>
-      <TextField label={label} variant="outlined" onChange={onChange}/>
-       			</Grid>
-				<Grid item xs={6}>
-      <RadioGroup>
-      <FormControlLabel value="relative" control={<Radio />} label="Relative Time" />
-      <FormControlLabel value="absolute" control={<Radio />} label="Specific Time" />
-      </RadioGroup>
-      		</Grid>
-      	</Grid>
-      	</div>)
+		const onRelativeTimeNowChanged = (e)=>{
+			var value = e.target.value;
+			setNow(value);
+			onValueAssigned(variable,operation,value+timeQuantity+timeUnits);
+		}
+		const onAbsoluteTimeChanged = (date) =>{
+			var isodate;
+			try{
+				isodate = date.toISOString().substring(0,18)+"Z";
+			}catch(e){
+				setBadDateFormat(true);
+				return;
+			}
+			setSelectedDate(date);
+			setBadDateFormat(false);
+			onValueAssigned(variable,operation,isodate)
+		};
+		if(absoluteOrRelative === "0"){
+			return(
+			<Select labelId={label} value={absoluteOrRelative} onChange={onAbsoluteOrRelativeChanged}>
+				<MenuItem key="0" value="0">Choose how to specify {variable}... </MenuItem>
+				<MenuItem key="absolute" value="absolute">A specific date/time...</MenuItem>)
+				<MenuItem key="relative" value="relative">A time relative to when the query is run...</MenuItem>)
+			</Select>
+		 );
+		}
+		if(absoluteOrRelative === "relative"){
+			return (
+			<FormControl component="fieldset" margin="dense">
+        <FormLabel component="legend">{label}</FormLabel>
+			<FormGroup row={true}>
+			<Select value={now} onChange={onRelativeTimeNowChanged}>
+				<MenuItem key="nowPlus" value="now+">NOW plus</MenuItem>)
+				<MenuItem key="nowMinus" value="now-">NOW minus</MenuItem>
+			</Select>
+			   <TextField type="number" InputProps={{inputProps:{min: 1}}} value={timeQuantity} onChange={onRelativeTimeQuantityChanged}/>
+			<Select value={timeUnits} onChange={onRelativeTimeUnitsChanged}>
+				<MenuItem key="seconds" value="seconds">{timeQuantity === 1 ? "second":"seconds"}</MenuItem>
+				<MenuItem key="minutes" value="minutes">{timeQuantity === 1 ? "minute":"minutes"}</MenuItem>
+				<MenuItem key="hours" value="hours">{timeQuantity === 1 ? "hour": "hours"}</MenuItem>
+				<MenuItem key="days" value="days">{timeQuantity === 1 ? "day": "days"}</MenuItem>
+				<MenuItem key="months" value="months">{timeQuantity === 1 ? "month": "months"}</MenuItem>
+				<MenuItem key="years" value="years">{timeQuantity === 1 ? "year": "years"}</MenuItem>
 				
-	}
+			</Select>
+			   </FormGroup>
+			   </FormControl>);
+		}
+		console.log("absoluteOrRelative",absoluteOrRelative);
+		if(selectedDate === false){
+			onAbsoluteTimeChanged(new Date(new Date().toISOString().substring(0,10)+"Z"))
+		}
+
+		 return (      <KeyboardDateTimePicker
+        variant="inline"
+        ampm={false}
+        label={label}
+        value={selectedDate}
+        onChange={onAbsoluteTimeChanged}
+        onError={console.log}
+        format="yyyy-MM-dd HH:mm:ss"
+      />);
+				
 }
 const filterkv = {
 	"=": "equals",
@@ -96,35 +144,32 @@ const filterkv = {
 	"<=": "is not greater than",
 	"=~": "matches the regular expression"
 }
-class ItemFilter extends React.Component {
-	render(){
-		const {variable,value,datatype,onChange} = this.props;
-		const filters = ["=","!=","<",">","<=",">="];
-		if(datatype === "String"){
-			filters.push("=~");
-		}
 
-		return(
-				<Select labelId={variable} value={value} onChange={onChange}>
-				<MenuItem key="0" value="0">Filter by {variable} ... </MenuItem>
-				{filters.map((key)=>{
-					return(<MenuItem key={key} value={key}>{variable} {filterkv[key]}</MenuItem>)
-				})}
-				</Select>
-			);
+function ItemFilter(props){
+	const {variable,value,datatype,onChange} = props;
+	const filters = ["=","!=","<",">","<=",">="];
+	if(datatype === "String"){
+		filters.push("=~");
 	}
+
+	return(
+			<Select labelId={variable} value={value} onChange={onChange}>
+			<MenuItem key="0" value="0">Filter by {variable} ... </MenuItem>
+			{filters.map((key)=>{
+				return(<MenuItem key={key} value={key}>{variable} {filterkv[key]}</MenuItem>)
+			})}
+			</Select>
+		);
 }
 
-class FieldFilterSelect extends React.Component{
-	render() {
-		const {variables,onChange} = this.props;
-		return (<Select value="__choose__" onChange={onChange}>
-			<MenuItem key="__choose__" value="__choose__">Add a filter...</MenuItem>
-				{variables.map((variable)=> {
-					return(<MenuItem key={variable} value={variable}>{variable}</MenuItem>)
-				})}
-		</Select>);
-	}
+function FieldFilterSelect(props){
+	const {variables,onChange} = props;
+	return (<Select value="__choose__" onChange={onChange}>
+		<MenuItem key="__choose__" value="__choose__">Add a filter...</MenuItem>
+			{variables.map((variable)=> {
+				return(<MenuItem key={variable} value={variable}>{variable}</MenuItem>)
+			})}
+	</Select>);
 }
 /*
 class FieldFilter extends React.Component{
