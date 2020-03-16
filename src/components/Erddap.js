@@ -16,7 +16,7 @@ class Erddap extends React.Component {
 	}
      
     onDatasetChanged(event){
-    	this.setState({dataset: event.target.value})
+	    this.setState({dataset: event.target.value})
     }
 
 	componentDidMount() {
