@@ -19,6 +19,11 @@ class QueryConstructorForm extends React.Component{
 
 	setSelected(selected){
 		this.setState({variables: selected});
+		selected.forEach(variable=>{
+			if(this.props.dataset._meta.subsetVariables.indexOf(variable)>=0){
+				this.props.dataset.prepareSubset(variable);
+			}
+		})
 		this.props.onChange(selected, this.state.filters);
 	}
 
@@ -55,7 +60,7 @@ class QueryConstructorForm extends React.Component{
 				}
 				</React.Fragment>)
   		}
-return (<h1>sorry</h1>)
+return (<h1>sorry, no metadata</h1>)
 	}
 }
 class QueryResults extends React.Component{

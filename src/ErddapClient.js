@@ -74,6 +74,7 @@ var time_encoder = function(value,istabledap) {
 var ErddapDataset = function(erddap,dsid){
 	this.erddap = erddap;
 	this.dataset_id = dsid;
+	this.subsets = {};
 	this._fetchMetadata =   this.erddap.search("datasetID=" + this.dataset_id).then(function(data){
 	      for(var i=0;i<data.length;i++){
 	        if(data[i]["Dataset ID"] === this.dataset_id){
@@ -101,6 +102,11 @@ var ErddapDataset = function(erddap,dsid){
 	      _fieldnames: [],
 	      _type: {}
 	    };
+	    var subsetVariables = [];
+	    try{
+	    	subsetVariables = info.attribute.NC_GLOBAL.subsetVariables.value.split(",").map(x=>x.trim());
+
+	    }catch(e){}
 	    var wanted = ["dimension", "variable"];
 	    for (var x = 0; x < wanted.length; x++) {
 	      var dimvar = wanted[x];
@@ -182,11 +188,13 @@ var ErddapDataset = function(erddap,dsid){
 	    dataset.base_url = this.erddap.base_url;
 	    dataset.id = this.dataset_id;
 	    dataset.info = info;
+	    dataset.subsetVariables = subsetVariables;
 	    dataset.encode = function(variable,constraint,value){
 	    	const encoded_value = this.param_encoder[variable](value);
 	    	return `${variable}${constraint}${encoded_value}`;
 
 	    }.bind(dataset);
+	    dataset.subsets = this.subsets;
 	    this._meta = dataset;
 	    return dataset;
 	  }.bind(this));
@@ -199,6 +207,15 @@ ErddapDataset.prototype.variables = function(){
 
 ErddapDataset.prototype.fetchMetadata = function(){
 	return this._fetchMetadata;
+}
+ErddapDataset.prototype.prepareSubset = function(variable){
+	if(this.subsets[variable] === undefined){
+		this.subsets[variable] = null;
+		this.fetchData(variable+"&distinct()").then(results=>{
+			this.subsets[variable] = results.map(o=>o[variable]);
+		})
+	}
+
 }
 
 ErddapDataset.prototype.fetchData = function(dap){

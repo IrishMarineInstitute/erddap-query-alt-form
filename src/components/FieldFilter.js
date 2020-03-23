@@ -8,6 +8,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 import { FormGroup, FormControl, FormControlLabel, FormLabel  } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 
 const AntSwitch = withStyles(theme => ({
@@ -45,10 +46,24 @@ const AntSwitch = withStyles(theme => ({
 }))(Switch);
 
 function ItemTextField(props) {
-		const {variable,operation,onValueAssigned} = props;
+		const {variable,operation,onValueAssigned,metadata} = props;
 		const label = variable+" "+filterkv[operation];
-		const onChange = (e) =>{onValueAssigned(variable,operation,e.target.value)};
-		return(<TextField label={label} variant="outlined" onChange={onChange}/>)
+		const onChange = (e,value) =>{
+            onValueAssigned(variable,operation,value);
+        };
+        let options = metadata.subsets[variable];
+        console.log("metadata",metadata);
+        if(options){
+            return(<Autocomplete
+              options={options}
+              style={{ width: 300 }}
+              renderInput = {params => (<TextField {...params} label={label} variant="outlined" />)}
+              label={label}
+              onInputChange={onChange}
+         />);
+         
+        }
+		return (<TextField label={label} variant="outlined" onChange={onChange}/>);
 }
 
 function ItemTimeField(props){
@@ -119,7 +134,7 @@ function ItemTimeField(props){
 			   </FormGroup>
 			   </FormControl>);
 		}
-		console.log("absoluteOrRelative",absoluteOrRelative);
+		//console.log("absoluteOrRelative",absoluteOrRelative);
 		if(selectedDate === false){
 			onAbsoluteTimeChanged(new Date(new Date().toISOString().substring(0,10)+"Z"))
 		}
