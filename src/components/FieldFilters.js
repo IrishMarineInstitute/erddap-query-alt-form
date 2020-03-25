@@ -15,6 +15,7 @@ export default function FieldFilters(props){
 		onFiltersChanged && onFiltersChanged(filters2.filter(filter=>filter.uri_component));
 	};
 	const onValueAssigned = (filter,variable,constraint,value)=>{
+		if(value === undefined) return;
 		const filters2 = [...filters];
 		filters2.forEach((f)=>{
 			if(f.key === filter.key){

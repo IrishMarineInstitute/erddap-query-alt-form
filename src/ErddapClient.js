@@ -218,10 +218,14 @@ ErddapDataset.prototype.prepareSubset = function(variable){
 
 }
 
+ErddapDataset.prototype.getDataUrl = function(formatExtension){
+	return this.erddap.base_url + "/tabledap/" + this.dataset_id+formatExtension+"?"
+}
 ErddapDataset.prototype.fetchData = function(dap){
-	var url = this.erddap.base_url + "/tabledap/" + this.dataset_id+".json?"+dap;
+	var url = this.getDataUrl(".json")+dap;
 	return fetchJsonp(url)
-		.then(e2o);}
+		.then(e2o);
+ }
 
 ErddapClient.prototype.dataset = function(dsid){
 	this._datasets[dsid] = this._datasets[dsid] || new ErddapDataset(this,dsid);

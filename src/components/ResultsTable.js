@@ -15,7 +15,7 @@ export default function ResultsTable(props) {
 	  if(!(variables && variables.length)){
 	  	return ("")
 	  }
-	  const keys = variables;//Object.keys(data[0])
+	  const keys = variables;
 	  return (
 	  	<React.Fragment>
 	  	<Typography variant="h5" gutterBottom>Example Results:</Typography>

@@ -3,6 +3,8 @@ import MultiSelectSort from './MultiSelectSort';
 import FieldFilters from './FieldFilters';
 import ResultsTable from './ResultsTable';
 import {debounce} from 'lodash';
+import TabledapFormats from './TabledapFormats';
+import { Select, MenuItem, Box, Typography } from '@material-ui/core';
 
 class QueryConstructorForm extends React.Component{
 
@@ -63,10 +65,39 @@ class QueryConstructorForm extends React.Component{
 return (<h1>sorry, no metadata</h1>)
 	}
 }
-class QueryResults extends React.Component{
-	render(){
-		return(<h1>hello</h1>)
-	}
+function QueryLink(props){
+	const {dataset,variables,filters} = props;
+	const [format, setFormat] = React.useState("__choose__");
+		const onChange = (e,value) =>{
+            setFormat(e.target.value);
+        };
+		const options = TabledapFormats.map((format) =>
+  			<MenuItem key={format.value} value={format.value}>{format.label}</MenuItem>
+  		);
+  		if(!(variables && variables.length)){
+  			return "";
+  		}
+		const parts = [variables.join(",")];
+		const displayparts = [variables.join(",")];
+		if(filters && filters.length){
+			parts.push(filters.map(filter=>encodeURIComponent(filter.uri_component)).join("&"))
+			displayparts.push(filters.map(filter=>filter.uri_component).join("&"))
+		}
+		const base_url = dataset.getDataUrl(format==="__choose__"?".htmlTable":format);
+		const uri_component = base_url+parts.join("&");
+		const uri_display = base_url+displayparts.join("&");
+	return (
+	<React.Fragment>
+	  	<Typography variant="h5" gutterBottom>Download Link:</Typography>
+		<Box m={1} key="Download Format" component="div" display="block">
+		<Select value={format} onChange={onChange}>
+			<MenuItem key="__choose__" value="__choose__" >Choose Download File Format...</MenuItem>
+		{options}
+		</Select>
+		</Box>
+		<a key="downloadLink" href={uri_component}>{uri_display}</a>
+	</React.Fragment>
+	);
 }
 class DataAccessForm extends React.Component {
 	constructor(props){
@@ -76,6 +107,7 @@ class DataAccessForm extends React.Component {
 			metadata: false,
 			data: [],
 			variables: [],
+			filters: [],
 			queryno: 0
 		}
 		this.onChange = debounce(this.onChange.bind(this),500);
@@ -93,7 +125,7 @@ class DataAccessForm extends React.Component {
 		let uri_component = parts.join("&");
 		//console.log(decodeURIComponent(uri_component), dataset);
 		let newqueryno = queryno + 1;
-		this.setState({variables: variables, queryno: newqueryno,  data: []});
+		this.setState({variables: variables, filters: filters, queryno: newqueryno,  data: []});
 		dataset.fetchData(uri_component).then(this.onDataFetched.bind(this,newqueryno)).catch(this.noDataFetched.bind(this,newqueryno));
 	}
 
@@ -129,7 +161,7 @@ class DataAccessForm extends React.Component {
 	}
 	render(){
 		const {dataset_id} = this.props;
-		const {dataset,metadata,data,variables} = this.state;
+		const {dataset,metadata,data,variables,filters} = this.state;
 		if(dataset_id === "0" || !dataset_id)  {
 			return(<div></div>)
 		}
@@ -140,6 +172,7 @@ class DataAccessForm extends React.Component {
 		<React.Fragment>
 			<QueryConstructorForm onChange={this.onChange} dataset={dataset} metadata={metadata}/>
 			<ResultsTable data={data} variables={variables}/>
+			<QueryLink variables={variables} filters={filters} dataset={dataset}/>
 		</React.Fragment>
 		)
 
