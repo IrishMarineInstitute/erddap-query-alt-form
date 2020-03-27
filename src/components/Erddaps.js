@@ -11,12 +11,13 @@ export default function Erddaps(props){
     const onErddapChanged = function(event){
         setErddapUrl(event.target.value);
     }
+    const protocol = window.location.protocol.substring(0,window.location.protocol.length-1);
     useEffect(()=>{
         if(!fetchedAwesomErddaps){
             setFetchedAwesomeErddaps(true);
             async function fetchData() {
                 await erddapClient.fetchAwesomeErddaps().then(data=>{
-                    setAwesomErddaps(data.filter(x=>x.public));
+                    setAwesomErddaps(data.filter(x=>x.public && x.url.startsWith(protocol)));
                 });
               }
             fetchData();        
