@@ -123,20 +123,17 @@ class DataAccessForm extends React.Component {
 		}
 		parts.push(encodeURIComponent('orderByLimit("5")'))
 		let uri_component = parts.join("&");
-		//console.log(decodeURIComponent(uri_component), dataset);
 		let newqueryno = queryno + 1;
 		this.setState({variables: variables, filters: filters, queryno: newqueryno,  data: []});
 		dataset.fetchData(uri_component).then(this.onDataFetched.bind(this,newqueryno)).catch(this.noDataFetched.bind(this,newqueryno));
 	}
 
 	onDataFetched = function(queryno,data){
-		console.log(this.state.queryno,queryno);
 		if(this.state.queryno === queryno){
 			this.setState({data: data});
 		}
 	}
 	noDataFetched = function(queryno,err){
-		console.log(this.state.queryno,queryno);
 		if(this.state.queryno === queryno){
 			this.setState({data: []});
 		}
@@ -154,7 +151,6 @@ class DataAccessForm extends React.Component {
 			}
 			const dataset = this.props.erddap.dataset(this.props.dataset_id);
 			dataset.fetchMetadata().then(function(metadata){
-				console.log(metadata);
 				this.setState({dataset: dataset, metadata: metadata, data: []});
 			}.bind(this))
 		}

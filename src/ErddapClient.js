@@ -1,11 +1,16 @@
 const jsonp = require('jsonp');
 var ErddapClient = function(url){
+	url = url || "https://coastwatch.pfeg.noaa.gov/erddap/";
 	this.base_url = url.replace(/\/+$/, "");
 	this._datasets = {};
 }
-const fetchJsonp = function(url){
+const fetchJsonp = function(url,callbackName){
+	const options = {param: ".jsonp"};
+	if(callbackName){
+		options.name = callbackName;
+	}
 	return new Promise((resolve,reject) => {
-		jsonp(url, {param: ".jsonp"},
+		jsonp(url, options,
 			(err,data)=>{
 				if(err){
 					reject(err);
@@ -15,7 +20,9 @@ const fetchJsonp = function(url){
 			});
   	});
 }
-
+ErddapClient.prototype.fetchAwesomeErddaps = function(){
+	return fetchJsonp("https://irishmarineinstitute.github.io/awesome-erddap/erddaps.jsonp","awesomeErddapsCb");
+}
 ErddapClient.prototype.search = function(query,page,itemsPerPage,timeout){
 	page = page || 1;
 	itemsPerPage = itemsPerPage  || 10000;

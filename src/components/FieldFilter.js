@@ -52,7 +52,6 @@ function ItemTextField(props) {
             onValueAssigned(variable,operation,value);
         };
         let options = metadata.subsets[variable];
-        console.log("metadata",metadata);
         if(options){
             return(<Autocomplete
               options={options}
@@ -134,7 +133,6 @@ function ItemTimeField(props){
 			   </FormGroup>
 			   </FormControl>);
 		}
-		//console.log("absoluteOrRelative",absoluteOrRelative);
 		if(selectedDate === false){
 			onAbsoluteTimeChanged(new Date(new Date().toISOString().substring(0,10)+"Z"))
 		}
@@ -190,7 +188,6 @@ function FieldFilterSelect(props){
 class FieldFilter extends React.Component{
 	render(){
 		const {variables} = this.props;
-		const onChange = ()=>{console.log("woohoo!!!")};
 		return (<FieldFilterSelect variables={variables} onChange={onChange}/>)
 	}
 }
