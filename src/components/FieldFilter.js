@@ -48,8 +48,8 @@ const AntSwitch = withStyles(theme => ({
 function ItemTextField(props) {
 		const {variable,operation,onValueAssigned,metadata} = props;
 		const label = variable+" "+filterkv[operation];
-		const onChange = (e,value) =>{
-            onValueAssigned(variable,operation,value);
+		const onChange = (e) =>{
+            onValueAssigned(variable,operation,e.target.value);
         };
         let options = metadata.subsets[variable];
         if(options){

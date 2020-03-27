@@ -148,6 +148,7 @@ var ErddapDataset = function(erddap,dsid){
 	            dataset._type[key] = "Integer"
 	            break;
 	          case 'String':
+	          case 'char':
 	            param_encoder[key] = function(v) {
 	              return '"' + v + '"'
 	            };
