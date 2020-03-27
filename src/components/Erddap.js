@@ -32,10 +32,11 @@ class Erddap extends React.Component {
 		const options = datasets.map((dataset_id) =>
   			<MenuItem key={dataset_id} value={dataset_id}>{dataset_id}</MenuItem>
   		);
+  		const choose = (datasets && datasets.length)?"Choose dataset...":"Loading Datasets...";
 		return (
 		<React.Fragment>
 		<Select value={dataset} onChange={this.onDatasetChanged} >
-		    <MenuItem value="0" key="choose..." selected>Choose Dataset...</MenuItem>
+		    <MenuItem value="0" key="choose..." selected>{choose}</MenuItem>
 			{options}
 		</Select>
 		<DataAccessForm erddap={erddap} dataset_id={dataset}/>
