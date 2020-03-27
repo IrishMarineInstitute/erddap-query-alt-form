@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/erddap-query-alt-form/precache-manifest.7c2cb104dcdfea0acb6f2d75b9ce73ca.js"
+  "/erddap-query-alt-form/precache-manifest.e8a30a658f5888f8068736ccbb29263f.js"
 );
 
 self.addEventListener('message', (event) => {
