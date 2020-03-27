@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d74f7953f9b4e6734018155eee7e8456",
+    "revision": "622db41c0bc094cfa4960e613df3b957",
     "url": "/erddap-query-alt-form/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/erddap-query-alt-form/static/css/2.764ccc25.chunk.css"
   },
   {
-    "revision": "883e3a09ad8a2b165f20",
+    "revision": "7cd871ca053acc3f052b",
     "url": "/erddap-query-alt-form/static/css/main.e1305a31.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/erddap-query-alt-form/static/js/2.6ed639aa.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "883e3a09ad8a2b165f20",
-    "url": "/erddap-query-alt-form/static/js/main.e36904ae.chunk.js"
+    "revision": "7cd871ca053acc3f052b",
+    "url": "/erddap-query-alt-form/static/js/main.60ec5e7e.chunk.js"
   },
   {
     "revision": "a7ce13fe9191a4b68838",
