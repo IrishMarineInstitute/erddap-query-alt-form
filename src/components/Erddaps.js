@@ -5,7 +5,6 @@ import Erddap from './Erddap';
 const erddapClient = new ErddapClient();
 export default function Erddaps(props){
     const [awesomeErddaps, setAwesomErddaps] = useState([]);
-    const [message, setMessage] = useState("loading...");
     const [erddapUrl, setErddapUrl] = useState("choose");
     const [fetchedAwesomErddaps, setFetchedAwesomeErddaps] = useState(false);
     const onErddapChanged = function(event){

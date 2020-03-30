@@ -124,9 +124,9 @@ var ErddapDataset = function(erddap,dsid){
 	      if (dimvar === "dimension") {
 	        dataset.dimensions = {};
 	      }
-	      dataset._type[key] = "String";
 
 	      for (var key in info[dimvar]) {
+  	      dataset._type[key] = "String";
 	        dataset._fieldnames.push(key);
 	        var etype = info[dimvar][key][""]["type"];
 	        var evalue = "" + info[dimvar][key][""]["value"];
@@ -182,12 +182,10 @@ var ErddapDataset = function(erddap,dsid){
 	        if (dimvar !== "dimension" && info.dimension && evalue) {
 	          dataset.dimensions[key] = evalue.split(/[ ,]+/);
 	        }
-	        if (info.attribute[key]) {
-	          if (info.attribute[key]["ioos_category"] && info.attribute[key]["ioos_category"].value == "Time") {
+	        if(key === "time"){
 	            dataset.time_dimension = key;
 	            param_encoder[key] = time_encoder;
 	            dataset._type[key] = "Time";
-	          }
 	        }
 	      }
 

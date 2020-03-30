@@ -5,7 +5,6 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { IconButton } from '@material-ui/core';
 
 export default function FieldFilters(props){
-	const [filtering, setFiltering] = useState(null);
 	const [filters, setFilters] = useState([{key: Math.random()}])
 	const {variables, metadata, onFiltersChanged} = props;
 	const addFilter = (filter)=>{setFilters([...filters,{key: Math.random()}]);}
@@ -19,7 +18,7 @@ export default function FieldFilters(props){
 		const filters2 = [...filters];
 		filters2.forEach((f)=>{
 			if(f.key === filter.key){
-				if(value.length){
+				if((""+value).length){
 					f.variable = variable;
 					f.constraint = constraint;
 					f.value = value;

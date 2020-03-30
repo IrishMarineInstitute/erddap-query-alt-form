@@ -1,65 +1,42 @@
 import React from 'react';
 import { Select, MenuItem, TextField} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
-import { FormGroup, FormControl, FormControlLabel, FormLabel  } from '@material-ui/core';
+import { FormGroup, FormControl, FormLabel  } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
 
-const AntSwitch = withStyles(theme => ({
-  root: {
-    width: 28,
-    height: 16,
-    padding: 0,
-    display: 'flex',
-  },
-  switchBase: {
-    padding: 2,
-    color: theme.palette.grey[500],
-    '&$checked': {
-      transform: 'translateX(12px)',
-      color: theme.palette.common.white,
-      '& + $track': {
-        opacity: 1,
-        backgroundColor: theme.palette.primary.main,
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  },
-  thumb: {
-    width: 12,
-    height: 12,
-    boxShadow: 'none',
-  },
-  track: {
-    border: `1px solid ${theme.palette.grey[500]}`,
-    borderRadius: 16 / 2,
-    opacity: 1,
-    backgroundColor: theme.palette.common.white,
-  },
-  checked: {},
-}))(Switch);
 
 function ItemTextField(props) {
 		const {variable,operation,onValueAssigned,metadata} = props;
 		const label = variable+" "+filterkv[operation];
+        const [value, setvalue] = React.useState("_choose");
 		const onChange = (e) =>{
+            setvalue(e.target.value);
             onValueAssigned(variable,operation,e.target.value);
         };
         let options = metadata.subsets[variable];
         if(options){
-            return(<Autocomplete
-              options={options}
-              style={{ width: 300 }}
-              renderInput = {params => (<TextField {...params} label={label} variant="outlined" />)}
-              label={label}
-              onInputChange={onChange}
-         />);
+            const isString = metadata._type[variable] === 'String'?true:false;
+
+            if(isString){
+                return(<Autocomplete
+                  options={options}
+                  style={{ width: 300 }}
+                  renderInput = {params => (<TextField {...params} label={label} variant="outlined" />)}
+                  label={label}
+                  onInputChange={onChange}
+                     />);
+            }
+            return(
+            <FormControl component="fieldset" margin="dense">
+            <FormLabel component="legend">{label}</FormLabel>
+                <Select label={label} value={value} onChange={onChange}>
+                <MenuItem key="_choose" value="_choose">Choose... </MenuItem>
+                {options.map(option=>{
+                    return(<MenuItem key={option} value={option}>{option}</MenuItem>)
+                })}
+                </Select>
+            </FormControl>);
          
         }
 		return (<TextField label={label} variant="outlined" onChange={onChange}/>);
