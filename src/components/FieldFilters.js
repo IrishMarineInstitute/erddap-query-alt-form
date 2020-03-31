@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import FieldFilter from './FieldFilter';
 import {Box} from '@material-ui/core';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import { IconButton } from '@material-ui/core';
+import { IconButton, FormLabel } from '@material-ui/core';
 
 export default function FieldFilters(props){
 	const [filters, setFilters] = useState([{key: Math.random()}])
@@ -34,6 +34,8 @@ export default function FieldFilters(props){
 		onFiltersChanged && onFiltersChanged(filters2.filter(filter=>filter.uri_component));
 	};
 	return (<React.Fragment>
+	            <FormLabel component="legend">Filters</FormLabel>
+
 				{filters.map((filter, idx)=>{
 					let icon;
 					let deleteThisFilter = deleteFilter.bind(null,filter);

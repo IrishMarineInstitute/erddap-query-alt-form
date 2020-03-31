@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Select, MenuItem, Box } from '@material-ui/core';
+import { Select, MenuItem, Box, FormControl, FormLabel } from '@material-ui/core';
 import ErddapClient from '../ErddapClient'
 import Erddap from './Erddap';
 const erddapClient = new ErddapClient();
@@ -29,10 +29,13 @@ export default function Erddaps(props){
         return (
         <React.Fragment>
             <Box display="block">
+            <FormControl component="fieldset" margin="dense">
+            <FormLabel component="legend">Erddap Server</FormLabel>
             <Select value={erddapUrl} onChange={onErddapChanged} >
-                <MenuItem value="choose" key="choose..." selected>Choose Erddap...</MenuItem>
+                <MenuItem value="choose" key="choose..." selected>Choose...</MenuItem>
                 {options}
             </Select>
+            </FormControl>
             </Box>
 
              {erddap}

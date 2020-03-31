@@ -1,27 +1,30 @@
 import React from 'react';
 import { Select, MenuItem, TextField} from '@material-ui/core';
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
-import { FormGroup, FormControl, FormLabel  } from '@material-ui/core';
+import { FormGroup, FormControl, FormLabel} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
 
 
 function ItemTextField(props) {
+    //TODO: split this into two controls...
 		const {variable,operation,onValueAssigned,metadata} = props;
 		const label = variable+" "+filterkv[operation];
         const [value, setvalue] = React.useState("_choose");
-		const onChange = (e) =>{
-            setvalue(e.target.value);
-            onValueAssigned(variable,operation,e.target.value);
+		const onChange = (event, val, reason) =>{
+            const assigned = event.target.value; //event.target && event.target.value !== undefined ? event.target.value: val;
+            setvalue(assigned);
+            onValueAssigned(variable,operation,assigned);
         };
         let options = metadata.subsets[variable];
         if(options){
             const isString = metadata._type[variable] === 'String'?true:false;
 
-            if(isString){
-                return(<Autocomplete
+            if(false && isString){
+                return(
+                    <Autocomplete
                   options={options}
-                  style={{ width: 300 }}
+                  style={{ width: 300, display: 'inline-flex'}}
                   renderInput = {params => (<TextField {...params} label={label} variant="outlined" />)}
                   label={label}
                   onInputChange={onChange}
@@ -165,7 +168,9 @@ function FieldFilterSelect(props){
 class FieldFilter extends React.Component{
 	render(){
 		const {variables} = this.props;
-		return (<FieldFilterSelect variables={variables} onChange={onChange}/>)
+		return (
+            <FieldFilterSelect variables={variables} onChange={onChange}/>
+            )
 	}
 }
 

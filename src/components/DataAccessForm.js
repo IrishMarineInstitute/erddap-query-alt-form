@@ -4,7 +4,7 @@ import FieldFilters from './FieldFilters';
 import ResultsTable from './ResultsTable';
 import {debounce} from 'lodash';
 import TabledapFormats from './TabledapFormats';
-import { Select, MenuItem, Box, Typography } from '@material-ui/core';
+import { Select, MenuItem, Box, Typography, FormLabel } from '@material-ui/core';
 
 class QueryConstructorForm extends React.Component{
 
@@ -50,6 +50,7 @@ class QueryConstructorForm extends React.Component{
 			metadata._fieldnames.filter(field=>variables.indexOf(field)<0).map(map).forEach(option=>options.push(option));
 			
 			return (<React.Fragment>
+				<FormLabel component="legend">Fields</FormLabel>
 				<MultiSelectSort 
 				dataset={dataset} 
 				selected={options.filter(o=>variables.indexOf(o.value)>=0)} 

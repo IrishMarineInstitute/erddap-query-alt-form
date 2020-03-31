@@ -1,7 +1,7 @@
 import React from 'react';
 import ErddapClient from '../ErddapClient'
 import DataAccessForm from './DataAccessForm'
-import { Select, MenuItem } from '@material-ui/core';
+import { Select, MenuItem, Box, FormLabel, FormControl } from '@material-ui/core';
 
 
 class Erddap extends React.Component {
@@ -32,13 +32,19 @@ class Erddap extends React.Component {
 		const options = datasets.map((dataset_id) =>
   			<MenuItem key={dataset_id} value={dataset_id}>{dataset_id}</MenuItem>
   		);
-  		const choose = (datasets && datasets.length)?"Choose dataset...":"Loading Datasets...";
+  		const choose = (datasets && datasets.length)?"Choose...":"Loading...";
 		return (
 		<React.Fragment>
+		            <Box display="block">
+            <FormControl component="fieldset" margin="dense">
+            <FormLabel component="legend">Dataset</FormLabel>
+
 		<Select value={dataset} onChange={this.onDatasetChanged} >
 		    <MenuItem value="0" key="choose..." selected>{choose}</MenuItem>
 			{options}
 		</Select>
+		</FormControl>
+		</Box>
 		<DataAccessForm erddap={erddap} dataset_id={dataset}/>
 		</React.Fragment>
 		);
