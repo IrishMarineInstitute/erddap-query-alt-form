@@ -87,6 +87,7 @@ function QueryLink(props){
 		const base_url = dataset.getDataUrl(format==="__choose__"?".htmlTable":format);
 		const uri_component = base_url+parts.join("&");
 		const uri_display = base_url+displayparts.join("&");
+		const apidocs_link = "https://irishmarineinstitute.github.io/zapidox/#"+uri_component;
 	return (
 	<React.Fragment>
 	  	<Typography variant="h5" gutterBottom>Download Link:</Typography>
@@ -97,6 +98,8 @@ function QueryLink(props){
 		</Select>
 		</Box>
 		<a key="downloadLink" href={uri_component}>{uri_display}</a>
+		<Typography variant="h5" gutterBottom>Using this query from code</Typography>
+		<a key="apidocsLink" href={apidocs_link}>View API style documentation for this query</a>
 	</React.Fragment>
 	);
 }
